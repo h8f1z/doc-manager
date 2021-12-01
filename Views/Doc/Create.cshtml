@@ -1,0 +1,24 @@
+@model ViewModels.DocumentCreateViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container">
+  <form action="">
+    <div class="mb-3">
+      <label for="FileName" as>File name</label>
+    </div>
+    <div class="mb-3">
+      <label for="formFile" class="form-label">Default file input example</label>
+      <input class="form-control" type="file" id="formFile">
+    </div>
+    <div class="mb-3">
+      <input type="checkbox" name="IsHidden" id="IsHidden">
+      <label for="IsHidden">Keep Doc Hidden</label>
+    </div>
+    <div class="mb-3">
+      <button type="submit" class="btn btn-primary">Upload</button>
+    </div>
+  </form>
+</div>
