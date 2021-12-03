@@ -1,7 +1,13 @@
+using doc_manager.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<DocumentContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DocumentContext")));
 
 var app = builder.Build();
 

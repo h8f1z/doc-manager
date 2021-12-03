@@ -1,8 +1,30 @@
-﻿@{
+﻿@using doc_manager.ViewModels
+@model List<doc_manager.ViewModels.DocumentListViewModel>;
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Documents</h1>
+        <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">File Name</th>
+                <th scope="col">Uploaded Date</th>
+            </tr>
+        </thead>
+        <tbody>
+        @{ var i = 1; }
+        @foreach (DocumentListViewModel doc in Model)
+        {
+            <tr>
+                <th scope="row">@i</th>
+                <td>@doc.FileName</td>
+                <td>@doc.UploadedAt</td>                
+            </tr>
+            i++;
+        }
+        </tbody>
+    </table>
 </div>

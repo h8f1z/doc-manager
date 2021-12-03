@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using doc_manager.ViewModels;
 using System.IO;
+using doc_manager.Data;
 
 namespace doc_manager.Controllers;
 
@@ -8,14 +9,18 @@ public class DocController : Controller
 {
   private readonly ILogger<DocController> _logger;
   private readonly IConfiguration _config;
+  private readonly DocumentContext _context;
 
-  public DocController(ILogger<DocController> logger, IConfiguration config)
+  public DocController(ILogger<DocController> logger,
+                       IConfiguration config,
+                       DocumentContext context)
   {
     _logger = logger;
     _config = config;
+    _context = context;
   }
 
-  public IActionResult Create()
+  public IActionResult Upload()
   {
     _logger.LogInformation("Page Loading...");
     return View();
@@ -25,7 +30,7 @@ public class DocController : Controller
   [ValidateAntiForgeryToken]
   // Set the limit to 5 MB
   [RequestFormLimits(MultipartBodyLengthLimit = 5242880)]
-  public async Task<IActionResult> CreateAsync(DocumentCreateViewModel createVm)
+  public async Task<IActionResult> UploadAsync(DocumentCreateViewModel createVm)
   {
     _logger.LogInformation("Post data received.");
     if (!ModelState.IsValid)
@@ -53,7 +58,21 @@ public class DocController : Controller
         _logger.LogInformation("File Copied");
       }
 
-      // todo: save to database
+      // save to database
+      try{
+        await _context.Document.AddAsync(new Models.Document{
+          FileName = fileName,
+          FilePath = filePath,
+          IsHidden = createVm.IsHidden,
+          UploadedAt = DateTime.Now,          
+        });
+        await _context.SaveChangesAsync();
+        _logger.LogInformation("Document added to db");
+      } catch (Exception ex) {
+        _logger.LogError(ex.Message);
+        ViewBag.ErrorMessage = "Could not upload document. Please contact admin";
+        return View();
+      }
 
     }
     else
